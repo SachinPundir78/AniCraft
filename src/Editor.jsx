@@ -167,17 +167,34 @@ function Editor() {
     if (selectedOverlay === id) setSelectedOverlay(null);
   };
 
-  const handleMouseDown = (e, id) => {
-    isDragging.current = true;
-    setSelectedOverlay(id);
-    const overlay = overlayItems.find((item) => item.id === id);
-    dragOffset.current = {
-      x: e.clientX - overlay.position.x,
-      y: e.clientY - overlay.position.y,
+  // Get client coordinates from either mouse or touch event
+  const getClientCoordinates = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      return {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY,
+      };
+    }
+    return {
+      clientX: e.clientX,
+      clientY: e.clientY,
     };
   };
 
-  const handleMouseMove = (e) => {
+  const handleDragStart = (e, id) => {
+    e.preventDefault(); // Prevent default to avoid scrolling on mobile
+    isDragging.current = true;
+    setSelectedOverlay(id);
+    const overlay = overlayItems.find((item) => item.id === id);
+    const { clientX, clientY } = getClientCoordinates(e);
+
+    dragOffset.current = {
+      x: clientX - overlay.position.x,
+      y: clientY - overlay.position.y,
+    };
+  };
+
+  const handleDragMove = (e) => {
     if (!isDragging.current || !selectedOverlay) return;
     if (!imageRef.current) return;
 
@@ -185,8 +202,10 @@ function Editor() {
     const overlay = overlayItems.find((item) => item.id === selectedOverlay);
     if (!overlay) return;
 
-    const newX = e.clientX - dragOffset.current.x;
-    const newY = e.clientY - dragOffset.current.y;
+    const { clientX, clientY } = getClientCoordinates(e);
+
+    const newX = clientX - dragOffset.current.x;
+    const newY = clientY - dragOffset.current.y;
 
     updateOverlayPosition(selectedOverlay, {
       x: Math.max(0, Math.min(newX, container.width - overlay.size)),
@@ -194,7 +213,7 @@ function Editor() {
     });
   };
 
-  const handleMouseUp = () => {
+  const handleDragEnd = () => {
     isDragging.current = false;
   };
 
@@ -296,11 +315,19 @@ function Editor() {
   };
 
   useEffect(() => {
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    // Mouse events for desktop
+    document.addEventListener("mousemove", handleDragMove);
+    document.addEventListener("mouseup", handleDragEnd);
+
+    // Touch events for mobile
+    document.addEventListener("touchmove", handleDragMove, { passive: false });
+    document.addEventListener("touchend", handleDragEnd);
+
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mousemove", handleDragMove);
+      document.removeEventListener("mouseup", handleDragEnd);
+      document.removeEventListener("touchmove", handleDragMove);
+      document.removeEventListener("touchend", handleDragEnd);
     };
   }, [overlayItems, selectedOverlay]);
 
@@ -463,7 +490,7 @@ function Editor() {
                     alt="Overlay"
                     className={`
                       absolute object-contain cursor-grab active:cursor-grabbing
-                      transition-all duration-200
+                      transition-all duration-200 touch-none
                       ${
                         selectedOverlay === item.id
                           ? "ring-4 ring-yellow-400 ring-offset-2 ring-offset-black/50 shadow-2xl shadow-yellow-400/60"
@@ -484,7 +511,8 @@ function Editor() {
                       `,
                       transformOrigin: "center center",
                     }}
-                    onMouseDown={(e) => handleMouseDown(e, item.id)}
+                    onMouseDown={(e) => handleDragStart(e, item.id)}
+                    onTouchStart={(e) => handleDragStart(e, item.id)}
                   />
                 ))}
               </>
