@@ -73,9 +73,9 @@ AniCraft/
 
 ## 📸 Screenshots
 
-![Landing Page](l1.png)
-![Features Section](l2.png)
-![Editor Page](l3.png)
+![Landing Page](/public/l1.png)
+![Features Section](/public/l2.png)
+![Editor Page](/public/l3.png)
 
 ---
 
