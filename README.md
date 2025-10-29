@@ -37,6 +37,7 @@ AniCraft/
 │   ├── App.jsx
 │   ├── Editor.jsx
 │   ├── Landing.jsx
+│   ├── GhibliConverter.jsx
 │   ├── main.jsx
 │   └── index.css
 ├── index.html
@@ -68,6 +69,10 @@ AniCraft/
    ```bash
    npm run dev
    ```
+4. Create A env file
+   ```bash
+   .env file VITE_HF_TOKEN="your hugging face api"
+   ```
 
 ---
 
@@ -76,6 +81,7 @@ AniCraft/
 ![Landing Page](/public/l1.png)
 ![Features Section](/public/l2.png)
 ![Editor Page](/public/l3.png)
+![Ghibli Page](/public/l4.png)
 
 ---
 
