@@ -43,6 +43,13 @@ export default function Navbar() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-400 group-hover:w-full transition-all duration-300"></span>
             </a>
             <a
+              href="/ghibli"
+              className="text-white/90 hover:text-yellow-400 transition-all duration-300 font-medium relative group"
+            >
+              Ghibli Art
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-yellow-400 group-hover:w-full transition-all duration-300"></span>
+            </a>
+            <a
               href="https://portfolio-sachin-ruby.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
@@ -93,6 +100,14 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 Editor
+              </a>
+
+              <a
+                href="/ghibli"
+                className="block text-white/90 hover:text-yellow-400 transition-colors duration-300 font-medium py-2 rounded-lg hover:bg-white/5"
+                onClick={() => setIsOpen(false)}
+              >
+                Ghibli Art
               </a>
 
               <a
